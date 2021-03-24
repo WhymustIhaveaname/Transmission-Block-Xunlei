@@ -9,6 +9,7 @@
 这个最简化的脚本解释了基本原理。
 
 ```
+#!/bin/bash
 username="yourusername"
 password="yourpassword"
 host="127.0.0.1"
@@ -43,6 +44,7 @@ done
 我在 crontab 中让它每两分钟执行：`*/2 * * * * cd /home/blabla && ./block_xunlei.sh 1>>block_xunlei.log 2>&1`。
 
 ```
+#!/bin/bash
 date
 username="yourusername"
 password="yourpassword"
