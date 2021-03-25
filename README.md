@@ -13,7 +13,7 @@
 username="yourusername"
 password="yourpassword"
 host="127.0.0.1"
-port=9090
+port=9091
 chain="OUTPUT"
 speedlimit=15 # speed = ($speedlimit+5)x1.5 (kb/s)
 
@@ -49,7 +49,7 @@ date
 username="yourusername"
 password="yourpassword"
 host="127.0.0.1"
-port=9090
+port=9091
 chain="OUTPUT"
 speedlimit=15 # speed = ($speedlimit+5)x1.5 (kb/s)
 
