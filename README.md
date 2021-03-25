@@ -13,7 +13,7 @@
 username="yourusername"
 password="yourpassword"
 host="127.0.0.1"
-port=9091
+port=9090
 chain="OUTPUT"
 speedlimit=15 # speed = ($speedlimit+5)x1.5 (kb/s)
 
@@ -41,7 +41,7 @@ done
 * 每到整30分钟清空限速名单重新添加
 * 简化了输出
 
-我在 crontab 中让它每两分钟执行：`*/2 * * * * cd /home/blabla && ./block_xunlei.sh 1>>block_xunlei.log 2>&1`。
+我在 crontab 中让它每两分钟执行：`*/2 * * * * cd /home/blabla && ./block_xunlei.sh 1>>block_xunlei.log 2>&1`。注意由于 iptables 需要 sudo 权限，所以应当放置在 root 的 crontab 下。
 
 ```
 #!/bin/bash
@@ -49,7 +49,7 @@ date
 username="yourusername"
 password="yourpassword"
 host="127.0.0.1"
-port=9091
+port=9090
 chain="OUTPUT"
 speedlimit=15 # speed = ($speedlimit+5)x1.5 (kb/s)
 
