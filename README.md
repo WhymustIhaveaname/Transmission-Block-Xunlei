@@ -15,7 +15,6 @@ password="yourpassword"
 host="127.0.0.1"
 port=9091
 chain="OUTPUT"
-speedlimit=15 # speed = ($speedlimit+5)x1.5 (kb/s)
 
 ips=`transmission-remote $host:$port --auth $username:$password -t all --info-peers`
 echo "$ips"
@@ -27,7 +26,9 @@ do
     for i in `echo "$ips" | grep $client | cut --delimiter " " --fields 1`
     do
         echo $i
-        iptables -A $chain -m limit -d $i --limit $speedlimit/s -j ACCEPT
+        # 下面两句话的意思是，每秒钟的前5个包和之后的15个包会被 accept，再多了就丢弃
+        # 按每个包 1500 byte 算这就是限速到 30 kb/s
+        iptables -A $chain -m limit -d $i --limit 15/s --limit-burst 5 -j ACCEPT
         iptables -A $chain -d $i -j DROP
     done
 done
@@ -51,7 +52,10 @@ password="yourpassword"
 host="127.0.0.1"
 port=9091
 chain="OUTPUT"
-speedlimit=15 # speed = ($speedlimit+5)x1.5 (kb/s)
+
+# speed = ($speedlimit+$burstlimit)x1.5 (kb/s)
+speedlimit=15
+burstlimit=1
 
 ips=`transmission-remote $host:$port --auth $username:$password -t all --info-peers`
 #echo "$ips"
@@ -69,7 +73,6 @@ rules=`iptables -nL $chain`
 for client in Xunlei Thunder
 do
     echo -n "dealing $client: "
-    # echo $ips 没有换行符，加引号才有
     for i in `echo "$ips" | grep $client | cut --delimiter " " --fields 1`
     do
         if [[ $rules =~ $i ]]
@@ -77,7 +80,7 @@ do
             echo -n "$i, "
         else
             echo -n "$i NOT in rules, "
-            iptables -A $chain -m limit -d $i --limit $speedlimit/s -j ACCEPT
+            iptables -A $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
             iptables -A $chain -d $i -j DROP
         fi
     done
