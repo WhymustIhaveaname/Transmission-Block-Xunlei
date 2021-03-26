@@ -10,10 +10,7 @@
 
 ```
 #!/bin/bash
-username="yourusername"
-password="yourpassword"
-
-ips=`transmission-remote 127.0.0.1:9091 --auth $username:$password -t all --info-peers`
+ips=`transmission-remote 127.0.0.1:9091 --auth yourusername:yourpassword -t all --info-peers`
 echo "$ips"
 
 for client in Xunlei Thunder
@@ -55,7 +52,6 @@ speedlimit=15
 burstlimit=1
 
 ips=`transmission-remote $host:$port --auth $username:$password -t all --info-peers`
-#echo "$ips"
 
 minute=$(date "+%M")
 if [[ $minute == 30 ]]
@@ -65,7 +61,6 @@ then
 fi
 
 rules=`iptables -nL $chain`
-#echo "$rules"
 
 for client in Xunlei Thunder
 do
