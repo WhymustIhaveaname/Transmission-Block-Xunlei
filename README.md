@@ -12,11 +12,8 @@
 #!/bin/bash
 username="yourusername"
 password="yourpassword"
-host="127.0.0.1"
-port=9091
-chain="OUTPUT"
 
-ips=`transmission-remote $host:$port --auth $username:$password -t all --info-peers`
+ips=`transmission-remote 127.0.0.1:9091 --auth $username:$password -t all --info-peers`
 echo "$ips"
 
 for client in Xunlei Thunder
@@ -26,10 +23,10 @@ do
     for i in `echo "$ips" | grep $client | cut --delimiter " " --fields 1`
     do
         echo $i
-        # 下面两句话的意思是，每秒钟的前5个包和之后的15个包会被 accept，再多了就丢弃
+        # 下面两句话的意思是，每秒钟的前 5 个包和之后的 15 个包会被 accept，再多了就丢弃
         # 按每个包 1500 byte 算这就是限速到 30 kb/s
-        iptables -A $chain -m limit -d $i --limit 15/s --limit-burst 5 -j ACCEPT
-        iptables -A $chain -d $i -j DROP
+        iptables -A OUTPUT -m limit -d $i --limit 15/s --limit-burst 5 -j ACCEPT
+        iptables -A OUTPUT -d $i -j DROP
     done
 done
 ```
