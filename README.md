@@ -33,7 +33,7 @@ done
 这是我真正在用的脚本，它
 
 * 会判断规则是否在 iptables 中，不在才添加
-* 每到整30分钟清空限速名单重新添加
+* 每到整4小时的整30分钟清空限速名单
 * 增加了对 ipv6 的支持
 * 简化了输出
 
@@ -55,9 +55,9 @@ burstlimit=1
 ips=`transmission-remote $host:$port --auth $username:$password -t all --info-peers`
 
 minute=$(date "+%M")
-if [[ $minute == 30 ]]
-then
-    echo clear chain $chain
+hour=$(date "+%H")
+if (( minute == 30 )) && (( hour%4==0 )); then # 算术运算推荐(()), 字符串推荐[[]], 双括号内不需要用$转义, 记得两边都要有空格
+    echo clearing chain $chain
     iptables -F $chain
     ip6tables -F $chain
 fi
