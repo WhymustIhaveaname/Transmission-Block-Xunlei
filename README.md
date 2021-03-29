@@ -56,7 +56,7 @@ ips=`transmission-remote $host:$port --auth $username:$password -t all --info-pe
 
 minute=$(date "+%M")
 hour=$(date "+%H")
-if (( minute == 30 )) && (( hour%4==0 )); then # 算术运算推荐(()), 字符串推荐[[]], 双括号内不需要用$转义, 记得两边都要有空格
+if [[ ${minute#0} == 30 ]] && [[ hour%4 == 0 ]]; then # ${minute#0}是去掉开始的0否则bash会按8进制理解, 永远记得加足够的空格
     echo clearing chain $chain
     iptables -F $chain
     ip6tables -F $chain
