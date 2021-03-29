@@ -62,7 +62,7 @@ then
     ip6tables -F $chain
 fi
 
-rules=`iptables -nL $chain; ip6tables -nL OUTPUT`
+rules=`iptables -nL $chain; ip6tables -nL $chain`
 
 for client in Xunlei Thunder
 do
