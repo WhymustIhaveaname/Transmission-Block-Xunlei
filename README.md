@@ -22,8 +22,8 @@ do
         echo $i
         # 下面两句话的意思是，每秒钟的前 5 个包和之后的 15 个包会被 accept，再多了就丢弃
         # 按每个包 1500 byte 算这就是限速到 30 kb/s
-        iptables -A OUTPUT -m limit -d $i --limit 15/s --limit-burst 5 -j ACCEPT
-        iptables -A OUTPUT -d $i -j DROP
+        iptables -I OUTPUT -m limit -d $i --limit 15/s --limit-burst 5 -j ACCEPT
+        iptables -I OUTPUT -d $i -j DROP
     done
 done
 ```
@@ -76,11 +76,11 @@ do
         else
             echo -n "$i NOT in rules, "
             if [[ $i =~ ":"  ]]; then # if this is an ipv6 address
-                ip6tables -A $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
-                ip6tables -A $chain -d $i -j DROP
+                ip6tables -I $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
+                ip6tables -I $chain -d $i -j DROP
             else
-                iptables -A $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
-                iptables -A $chain -d $i -j DROP
+                iptables -I $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
+                iptables -I $chain -d $i -j DROP
             fi
         fi
     done
