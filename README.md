@@ -56,7 +56,9 @@ ips=`transmission-remote $host:$port --auth $username:$password -t all --info-pe
 
 minute=$(date "+%M")
 hour=$(date "+%H")
-if [[ ${minute#0} == 30 ]] && [[ hour%4 == 0 ]]; then # ${minute#0}是去掉开始的0否则bash会按8进制理解, 永远记得加足够的空格
+if (( ${minute#0} == 30 && ${hour#0}%4 == 0 )); then
+    # ${minute#0}是去掉开始的0, 否则bash会按8进制理解
+    # (()), [[]] 分别是 [] 对数值运算和字符串运算的升级版
     echo clearing chain $chain
     iptables -F $chain
     ip6tables -F $chain
