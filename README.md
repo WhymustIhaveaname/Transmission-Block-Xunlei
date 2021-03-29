@@ -34,6 +34,7 @@ done
 
 * 会判断规则是否在 iptables 中，不在才添加
 * 每到整30分钟清空限速名单重新添加
+* 增加了对 ipv6 的支持
 * 简化了输出
 
 我在 crontab 中让它每两分钟执行：`*/2 * * * * cd /home/blabla && ./block_xunlei.sh 1>>block_xunlei.log 2>&1`。注意由于 iptables 需要 sudo 权限，所以应当放置在 root 的 crontab 下。
@@ -58,22 +59,27 @@ if [[ $minute == 30 ]]
 then
     echo clear chain $chain
     iptables -F $chain
+    ip6tables -F $chain
 fi
 
-rules=`iptables -nL $chain`
+rules=`iptables -nL $chain; ip6tables -nL OUTPUT`
 
 for client in Xunlei Thunder
 do
     echo -n "dealing $client: "
     for i in `echo "$ips" | grep $client | cut --delimiter " " --fields 1`
     do
-        if [[ $rules =~ $i ]]
-        then
+        if [[ $rules =~ $i ]]; then
             echo -n "$i, "
         else
             echo -n "$i NOT in rules, "
-            iptables -A $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
-            iptables -A $chain -d $i -j DROP
+            if [[ $i =~ ":"  ]]; then # if this is an ipv6 address
+                ip6tables -A $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
+                ip6tables -A $chain -d $i -j DROP
+            else
+                iptables -A $chain -m limit -d $i --limit $speedlimit/s --limit-burst $burstlimit -j ACCEPT
+                iptables -A $chain -d $i -j DROP
+            fi
         fi
     done
     echo ""
