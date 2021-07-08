@@ -28,15 +28,6 @@ do
 done
 ```
 
-### crontab 找不到 iptables？
-
-crontab 运行时 PATH 为空，所以各种常见的应用程序它经常找不到，对此，有两种解决方法：
-
-1. 在 `crontab -e` 中加入 `PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin`，此后所有的 crontab 脚本都能找到各种应用程序。其中的 PATH 是在终端中用 `echo $PATH` 获得的。
-2. 将脚本中的 iptables 和 ip6tables 改为绝对路径 `/usr/sbin/iptables` 和 `/usr/sbin/ip6tables`。
-
-感谢 @NeraSnow 的 [Issue: iptables 使用绝对路径](https://github.com/WhymustIhaveaname/Transmission-Block-Xunlei/issues/1)。
-
 ### 真正使用的脚本
 
 这是我真正在用的脚本，它
@@ -47,6 +38,11 @@ crontab 运行时 PATH 为空，所以各种常见的应用程序它经常找不
 * 简化了输出
 
 我在 crontab 中让它每两分钟执行：`*/2 * * * * cd /home/blabla && ./block_xunlei.sh 1>>block_xunlei.log 2>&1`。注意由于 iptables 需要 sudo 权限，所以应当放置在 root 的 crontab 下。
+
+另外，由于 crontab 运行时 PATH 为空，所以各种常见的应用程序它经常找不到 (感谢 @NeraSnow 的 Issue#1)。对此，有两种解决方法：
+
+1. 在 crontab 中加入 `PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin`，此后所有的 crontab 脚本都能找到各种应用程序。其中的 PATH 是在终端中用 `echo $PATH` 获得的。
+2. 将脚本中的 iptables 和 ip6tables 改为绝对路径 `/usr/sbin/iptables` 和 `/usr/sbin/ip6tables`。
 
 ```
 #!/bin/bash
