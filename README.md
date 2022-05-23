@@ -13,11 +13,11 @@
 ips=`transmission-remote 127.0.0.1:9091 --auth yourusername:yourpassword -t all --info-peers`
 echo "$ips"
 
-for client in Xunlei Thunder
+for client in xunlei thunder gt0002 xl0012 xfplay dandanplay dl3760 qq
 do
     echo -n "dealing $client: "
     # echo $ips 没有换行符，加引号才有
-    for i in `echo "$ips" | grep $client | cut --delimiter " " --fields 1`
+    for i in `echo "$ips" | grep -i $client | cut --delimiter " " --fields 1`
     do
         echo $i
         # 下面两句话的意思是，每秒钟的前 5 个包和之后的 15 个包会被 accept，再多了就丢弃
@@ -71,10 +71,10 @@ fi
 
 rules=`iptables -nL $chain; ip6tables -nL $chain`
 
-for client in Xunlei Thunder
+for client in xunlei thunder gt0002 xl0012 xfplay dandanplay dl3760 qq
 do
     echo -n "dealing $client: "
-    for i in `echo "$ips" | grep $client | cut --delimiter " " --fields 1`
+    for i in `echo "$ips" | grep -i $client | cut --delimiter " " --fields 1`
     do
         if [[ $rules =~ $i ]]; then
             echo -n "$i, "
